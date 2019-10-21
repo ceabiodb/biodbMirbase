@@ -1,0 +1,26 @@
+# vi: fdm=marker
+
+databases:
+
+  mirbase.mature:
+    entry.content.type: txt
+    name: miRBase Mature
+    parsing.expr:
+      accession: ^>[^ ]+ *(MIMAT[0-9]+) .*$
+      description: ^>[^ ]+ *MIMAT[0-9]+ (.*)$
+      name: ^>([^ ]+) *MIMAT[0-9]+ .*$
+      sequence: ^([ACGU]+)$
+    scheduler.n: 3
+    urls:
+      base.url: http://www.mirbase.org/
+      ftp.url: ftp://mirbase.org/pub/mirbase/CURRENT/
+    dwnld.ext: gz
+
+fields:
+
+  mirbase.mature.id:
+    description: miRBase Mature ID
+    case.insensitive: true
+    forbids.duplicates: true
+    type: id
+    card: many
