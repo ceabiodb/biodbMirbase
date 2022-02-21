@@ -32,9 +32,8 @@ Suggests:
     covr,
     lgr
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Collate: 
-    'MirbaseConn.R'
     'MirbaseMatureConn.R'
     'MirbaseMatureEntry.R'
     'package.R'

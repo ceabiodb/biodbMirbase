@@ -26,7 +26,7 @@ MirbaseMatureEntry <- R6::R6Class("MirbaseMatureEntry",
         biodb::BiodbTxtEntry
     ,
 
-public=list(
+private=list(
 
 doCheckContent=function(content) {
     

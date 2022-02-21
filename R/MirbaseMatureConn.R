@@ -30,32 +30,24 @@ private=list(
 
 doDownload=function() {
 
-    url <- c(self$getPropValSlot('urls', 'ftp.url'), 'mature.fa.gz')
-    gz.url <- BiodbUrl(url=url)
+    url <- self$getPropValSlot('urls', 'dwnld.url')
+    gz.url <- biodb::BiodbUrl$new(url=url)
     sched <- self$getBiodb()$getRequestScheduler()
     sched$downloadFile(url=gz.url, dest.file=self$getDownloadPath())
 }
 
 ,doExtractDownload=function() {
 
-    # Extract
-    # We do this because of the warning:
-    # "seek on a gzfile connection returned an internal error"
-    # when using `gzfile()`.
-    extracted.file <- tempfile(self$getId())
-    R.utils::gunzip(filename=self$getDownloadPath(), destname=extracted.file,
-        remove=FALSE)
-
     # Read file
-    fd <- file(extracted.file, 'r')
+    fd <- gzfile(self$getDownloadPath(), 'r')
     lines <- readLines(fd)
     close(fd)
 
     # Get all entry IDs
     ids <- sub('^.*(MIMAT[0-9]+).*$', '\\1', grep('MIMAT', lines, value=TRUE),
         perl=TRUE)
-    self$debug("Found ", length(ids), " entries in file \"",
-        self$getDownloadPath(), "\".")
+    logDebug('Found %d entries in file "%s".', length(ids),
+          self$getDownloadPath())
 
     if (length(ids) > 0) {
         # Get contents
@@ -69,9 +61,6 @@ doDownload=function() {
         cch$saveContentToFile(contents, cache.id=self$getCacheId(),
             name=ids, ext=self$getPropertyValue('entry.content.type'))
     }
-
-    # Remove extract directory
-    unlink(extracted.file)
 }
 
 ,doGetEntryIds=function(max.results=NA_integer_) {
@@ -99,7 +88,7 @@ doDownload=function() {
 
 ,doGetEntryPageUrl=function(id) {
 
-    url <- c(.self$getPropValSlot('urls', 'base.url'), 'cgi-bin', 'mature.pl')
+    url <- c(self$getPropValSlot('urls', 'base.url'), 'cgi-bin', 'mature.pl')
     v <- vapply(id, function(x) biodb::BiodbUrl$new(url=url,
         params=list(mature_acc=x))$toString(), FUN.VALUE='')
 

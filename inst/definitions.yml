@@ -20,7 +20,7 @@ databases:
       # Base URL of the database server, where to find entry pages
       base.url: http://www.mirbase.org/
       # Download URL
-      ftp.url: ftp://mirbase.org/pub/mirbase/CURRENT/
+      dwnld.url: https://www.mirbase.org/ftp/CURRENT/mature.fa.gz
     downloadable: true
     dwnld.ext: gz
 
