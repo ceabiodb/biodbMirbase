@@ -1,32 +1,42 @@
-# vi: fdm=marker ts=4 et cc=80 tw=80
-
-# MirbaseMatureEntry {{{1
-################################################################################
-
-# Declaration {{{2
-################################################################################
-
-#' miRBase Mature entry class.
+#' miRBase mature database entry class.
 #'
-#' This is the connector class for Mirbase Mature database.
+#' Entry class for miRBase mature database. 
+#'
+#' @seealso
+#' \code{\link{BiodbTxtEntry}}.
 #'
 #' @examples
 #' # Create an instance with default settings:
-#' mybiodb <- biodb::Biodb()
+#' mybiodb <- biodb::newInst()
 #'
-#' # Create a connector
+#' # Get a connector that inherits from MirbaseMatureConn:
 #' conn <- mybiodb$getFactory()$createConn('mirbase.mature')
 #'
-#' # Get an entry
-#' \dontrun{
+#' # Get the first entry
 #' e <- conn$getEntry('MIMAT0000433')
-#' }
 #'
 #' # Terminate instance.
 #' mybiodb$terminate()
 #'
-#' @include BiodbTxtEntry.R
-#' @export MirbaseMatureEntry
-#' @exportClass MirbaseMatureEntry
-MirbaseMatureEntry <- methods::setRefClass("MirbaseMatureEntry",
-    contains="BiodbTxtEntry")
+#' @import biodb
+#' @import R6
+#' @export
+MirbaseMatureEntry <- R6::R6Class("MirbaseMatureEntry",
+    inherit=
+        biodb::BiodbTxtEntry
+    ,
+
+public=list(
+
+doCheckContent=function(content) {
+    
+    # You can do some more checks of the content here.
+    
+    return(TRUE)
+}
+
+,doParseFieldsStep2=function(parsed.content) {
+    
+    # TODO Implement your custom parsing processing here.
+}
+))
