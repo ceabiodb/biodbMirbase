@@ -13,7 +13,7 @@ pkgName: biodbMirbase
 pkgLicense: AGPL-3
 editable: no
 writable: no
-downloadable: no
+downloadable: true
 travis: no
 rcpp: no
 vignetteName: biodbMirbase
