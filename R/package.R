@@ -8,5 +8,7 @@
 #' @seealso \link{MirbaseMatureConn}.
 #'
 #' @import biodb
+#' @import stringr
+#' @import chk
 "_PACKAGE"
 NULL
