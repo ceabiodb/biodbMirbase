@@ -1,0 +1,19 @@
+email: pierrick.roger@cea.fr
+dbName: mirbase.mature
+dbTitle: miRBase mature database
+firstname: Pierrick
+lastname: Roger
+newPkg: yes
+connType: compound
+entryType: txt
+remote: yes
+makefile: yes
+githubRepos: pkrog/biodbMirbase
+pkgName: biodbMirbase
+pkgLicense: AGPL-3
+editable: no
+writable: no
+downloadable: true
+travis: no
+rcpp: no
+vignetteName: biodbMirbase

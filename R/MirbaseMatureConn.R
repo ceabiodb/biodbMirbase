@@ -1,123 +1,53 @@
-# vi: fdm=marker ts=4 et cc=80 tw=80
-
-# MirbaseMatureConn {{{1
-################################################################################
-
-# Declaration {{{2
-################################################################################
-
-#' Mirbase Mature connector class.
+#' miRBase mature database connector class.
 #'
-#' This is the connector class for Mirbase Mature database.
+#' Connector class for miRBase mature database.
+#'
+#' @seealso \code{\link{BiodbConn}}.
 #'
 #' @examples
 #' # Create an instance with default settings:
-#' mybiodb <- biodb::Biodb()
+#' mybiodb <- biodb::newInst()
 #'
-#' # Create a connector
+#' # Get a connector:
 #' conn <- mybiodb$getFactory()$createConn('mirbase.mature')
 #'
-#' # Get an entry
-#' \dontrun{
+#' # Get the first entry
 #' e <- conn$getEntry('MIMAT0000433')
-#' }
 #'
 #' # Terminate instance.
 #' mybiodb$terminate()
 #'
-#' @include MirbaseConn.R
-#' @include BiodbDownloadable.R
-#' @export MirbaseMatureConn
-#' @exportClass MirbaseMatureConn
-MirbaseMatureConn <- methods::setRefClass("MirbaseMatureConn",
-    contains=c("MirbaseConn", "BiodbDownloadable"),
+#' @import biodb
+#' @import R6
+#' @export
+MirbaseMatureConn <- R6::R6Class("MirbaseMatureConn",
+inherit=biodb::BiodbConn,
 
-# Public methods {{{2
-################################################################################
+public=list(
+),
 
-methods=list(
+private=list(
 
-# Get entry page url {{{3
-################################################################################
+doDownload=function() {
 
-getEntryPageUrl=function(id) {
-    # Overrides super class' method.
+    url <- self$getPropValSlot('urls', 'dwnld.url')
+    gz.url <- biodb::BiodbUrl$new(url=url)
+    sched <- self$getBiodb()$getRequestScheduler()
+    sched$downloadFile(url=gz.url, dest.file=self$getDownloadPath())
+}
 
-    url <- c(.self$getPropValSlot('urls', 'base.url'), 'cgi-bin', 'mature.pl')
-    v <- vapply(id,
-                function(x) BiodbUrl(url=url,
-                                     params=list(mature_acc=x))$toString(),
-                FUN.VALUE='')
-
-    return(v)
-},
-
-
-# Requires download {{{3
-################################################################################
-
-requiresDownload=function() {
-    # Overrides super class' method.
-
-    return(TRUE)
-},
-
-# Get entry content from database {{{3
-################################################################################
-
-getEntryContentFromDb=function(entry.id) {
-    # Overrides super class' method.
-
-    # Download
-    .self$download()
-
-    # Load content from cache
-    cch <- .self$getBiodb()$getPersistentCache()
-    ext <- .self$getPropertyValue('entry.content.type')
-    content <- cch$loadFileContent(.self$getCacheId(),
-                                   name=entry.id, ext=ext, output.vector=TRUE)
-
-    return(content)
-},
-
-
-# Private methods {{{2
-################################################################################
-
-# Do download {{{3
-################################################################################
-
-.doDownload=function() {
-
-    url <- c(.self$getPropValSlot('urls', 'ftp.url'), 'mature.fa.gz')
-    gz.url <- BiodbUrl(url=url)
-    sched <- .self$getBiodb()$getRequestScheduler()
-    sched$downloadFile(url=gz.url, dest.file=.self$getDownloadPath())
-},
-
-# Do extract download {{{3
-################################################################################
-
-.doExtractDownload=function() {
-
-    # Extract
-    # We do this because of the warning:
-    # "seek on a gzfile connection returned an internal error"
-    # when using `gzfile()`.
-    extracted.file <- tempfile(.self$getId())
-    R.utils::gunzip(filename=.self$getDownloadPath(), destname=extracted.file,
-                    remove=FALSE)
+,doExtractDownload=function() {
 
     # Read file
-    fd <- file(extracted.file, 'r')
+    fd <- gzfile(self$getDownloadPath(), 'r')
     lines <- readLines(fd)
     close(fd)
 
     # Get all entry IDs
     ids <- sub('^.*(MIMAT[0-9]+).*$', '\\1', grep('MIMAT', lines, value=TRUE),
-               perl=TRUE)
-    .self$debug("Found ", length(ids), " entries in file \"",
-                .self$getDownloadPath(), "\".")
+        perl=TRUE)
+    logDebug('Found %d entries in file "%s".', length(ids),
+          self$getDownloadPath())
 
     if (length(ids) > 0) {
         # Get contents
@@ -125,33 +55,26 @@ getEntryContentFromDb=function(entry.id) {
                           lines[seq(2, 2*length(ids), 2)], sep="\n")
 
         # Write all entries into files
-        cch <- .self$getBiodb()$getPersistentCache()
-        cch$deleteFiles(.self$getCacheId(),
-                        ext=.self$getPropertyValue('entry.content.type'))
-        cch$saveContentToFile(contents, cache.id=.self$getCacheId(),
-                              name=ids,
-                              ext=.self$getPropertyValue('entry.content.type'))
+        cch <- self$getBiodb()$getPersistentCache()
+        cch$deleteFiles(self$getCacheId(),
+            ext=self$getPropertyValue('entry.content.type'))
+        cch$saveContentToFile(contents, cache.id=self$getCacheId(),
+            name=ids, ext=self$getPropertyValue('entry.content.type'))
     }
+}
 
-    # Remove extract directory
-    unlink(extracted.file)
-},
-
-# Get entry ids {{{3
-################################################################################
-
-.doGetEntryIds=function(max.results=NA_integer_) {
+,doGetEntryIds=function(max.results=NA_integer_) {
 
     ids <- NULL
 
     # Download
-    .self$download()
+    self$download()
 
     # Get IDs from cache
-    cch <- .self$getBiodb()$getPersistentCache()
-    ids <- cch$listFiles(.self$getCacheId(),
-                         ext=.self$getPropertyValue('entry.content.type'),
-                         extract.name=TRUE)
+    cch <- self$getBiodb()$getPersistentCache()
+    ids <- cch$listFiles(self$getCacheId(),
+        ext=self$getPropertyValue('entry.content.type'),
+        extract.name=TRUE)
 
     # Filter out wrong IDs
     ids <- ids[grepl("^MIMAT[0-9]+$", ids, perl=TRUE)]
@@ -159,4 +82,16 @@ getEntryContentFromDb=function(entry.id) {
     return(ids)
 }
 
+,doGetEntryContentRequest=function(id, concatenate=TRUE) {
+    return(rep(NA_character_, length(id)))
+}
+
+,doGetEntryPageUrl=function(id) {
+
+    url <- c(self$getPropValSlot('urls', 'base.url'), 'cgi-bin', 'mature.pl')
+    v <- vapply(id, function(x) biodb::BiodbUrl$new(url=url,
+        params=list(mature_acc=x))$toString(), FUN.VALUE='')
+
+    return(v)
+}
 ))

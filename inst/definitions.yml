@@ -1,23 +1,30 @@
-# vi: fdm=marker
+# biodb example definitions file for extensions packages, version 1.0.0
 
 databases:
-
   mirbase.mature:
+    name: miRBase mature database
+    description: Write here the description of this database.
+    compound.db: true
     entry.content.type: txt
-    name: miRBase Mature
     parsing.expr:
       accession: ^>[^ ]+ *(MIMAT[0-9]+) .*$
       description: ^>[^ ]+ *MIMAT[0-9]+ (.*)$
       name: ^>([^ ]+) *MIMAT[0-9]+ .*$
       sequence: ^([ACGU]+)$
+    remote: true
+    # Length in seconds of the connection sliding window
+    scheduler.t: 1
+    # Number of connections allowed inside the connection sliding window
     scheduler.n: 3
     urls:
+      # Base URL of the database server, where to find entry pages
       base.url: http://www.mirbase.org/
-      ftp.url: ftp://mirbase.org/pub/mirbase/CURRENT/
+      # Download URL
+      dwnld.url: https://www.mirbase.org/ftp/CURRENT/mature.fa.gz
+    downloadable: true
     dwnld.ext: gz
 
 fields:
-
   mirbase.mature.id:
     description: miRBase Mature ID
     case.insensitive: true
