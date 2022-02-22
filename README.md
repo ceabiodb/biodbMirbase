@@ -22,7 +22,7 @@ devtools::install_github('pkrog/biodbMirbase', dependencies=TRUE)
 
 To instantiate a connector to miRBase mature database, run:
 ```r
-mybiodb <- biodb::Biodb()
+mybiodb <- boidb::newInst()
 conn <- mybiodb$getFactory()$createConn('mirbase.mature')
 mybiodb$terminate()
 ```
