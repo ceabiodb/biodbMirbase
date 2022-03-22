@@ -16,12 +16,23 @@ output:
     toc_float:
       collapsed: false
   BiocStyle::pdf_document: default
+bibliography: references.bib
 ---
 
 # Purpose
 
 biodbMirbase is a *biodb* extension package that implements a connector to
-miRBase mature database.
+miRBase mature database [@griffithsjones2006_miRBase,
+@griffithsjones2007_miRBase].
+
+# Installation
+
+Install using Bioconductor:
+```{r, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install('biodbMirbase')
+```
 
 # Initialization
 
@@ -79,3 +90,11 @@ ensure release of resources (file handles, database connection, etc):
 ```{r}
 mybiodb$terminate()
 ```
+
+# Session information
+
+```{r}
+sessionInfo()
+```
+
+# References

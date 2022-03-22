@@ -47,12 +47,12 @@ doDownload=function() {
     ids <- sub('^.*(MIMAT[0-9]+).*$', '\\1', grep('MIMAT', lines, value=TRUE),
         perl=TRUE)
     logDebug('Found %d entries in file "%s".', length(ids),
-          self$getDownloadPath())
+        self$getDownloadPath())
 
     if (length(ids) > 0) {
         # Get contents
         contents <- paste(lines[seq(1, 2*length(ids), 2)],
-                          lines[seq(2, 2*length(ids), 2)], sep="\n")
+            lines[seq(2, 2*length(ids), 2)], sep="\n")
 
         # Write all entries into files
         cch <- self$getBiodb()$getPersistentCache()

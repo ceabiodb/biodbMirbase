@@ -14,8 +14,7 @@ Install the latest version of this package by running the following commands:
 ```r
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install('biodb')
-devtools::install_github('pkrog/biodbMirbase', dependencies=TRUE)
+BiocManager::install('biodbMirbase')
 ```
 
 ## Examples
