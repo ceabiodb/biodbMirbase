@@ -23,7 +23,7 @@ bibliography: references.bib
 
 biodbMirbase is a *biodb* extension package that implements a connector to
 miRBase mature database [@griffithsjones2006_miRBase,
-@griffithsjones2007_miRBase].
+@griffithsjones2007_miRBase, @kozomara2010_miRBase, @kozomara2013_miRBase].
 
 # Installation
 
