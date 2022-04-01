@@ -1,2 +1,6 @@
+Changes in version 0.99.1 (2022-04-01)
++ Remove getNbEntries() example in vignette. No such web service exists in
+  miRBase.
+
 Changes in version 0.99.0 (2022-03-22)
 + Submitted to Bioconductor

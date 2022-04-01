@@ -60,11 +60,6 @@ conn <- mybiodb$getFactory()$createConn('mirbase.mature')
 
 # Accessing entries
 
-To get the number of entries stored inside the database, run:
-```{r}
-conn$getNbEntries()
-```
-
 To get some of the first entry IDs (accession numbers) from the database, run:
 ```{r}
 ids <- conn$getEntryIds(2)
